@@ -34,7 +34,8 @@ app.get("/", (req, res) => {
 // routes
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
-require("./app/routes/turorial.routes")(app);
+require("./app/routes/grade.routes")(app);
+require("./app/routes/discipline.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
@@ -50,22 +51,11 @@ function initial() {
  
   Role.create({
     id: 2,
-    name: "teacher"
+    name: "moderator"
   });
  
   Role.create({
     id: 3,
-    name: "student"
-  });
-
-  Role.create({
-      id: 4,
-      name: "staff"
-  });
-  Role.create({
-      id: 5,
-      name: "chef"
+    name: "admin"
   });
 }
-
-//initial();

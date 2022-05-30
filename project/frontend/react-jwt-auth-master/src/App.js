@@ -10,11 +10,14 @@ import Register from "./components/register.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
-import BoardTeacher from "./components/board-teacher.component";
-import BoardStudent from "./components/board-student.component";
-import AddTutorial from "./components/add-tutorial.component";
-import Tutorial from "./components/tutorial.component";
-import TutorialsList from "./components/tutorials-list.component";
+import BoardModerator from "./components/board-moderator.component";
+import BoardAdmin from "./components/board-admin.component";
+import AddDiscipline from "./components/add-discipline.component";
+import Discipline from "./components/discipline.component";
+import DisciplinesList from "./components/disciplines-list.component";
+import AddGrade from "./components/add-grade.component";
+import Grade from "./components/grade.component";
+import GradesList from "./components/grades-list.component";
 
 // import AuthVerify from "./common/auth-verify";
 import EventBus from "./common/EventBus";
@@ -25,8 +28,8 @@ class App extends Component {
     this.logOut = this.logOut.bind(this);
 
     this.state = {
-      showTeacherBoard: false,
-      showStudentBoard: false,
+      showTeacher: false,
+      showStudent: false,
       currentUser: undefined,
     };
   }
@@ -35,10 +38,10 @@ class App extends Component {
     const user = AuthService.getCurrentUser();
 
     if (user) {
-      this.setState({
-        currentUser: user,
-        showTeacherBoard: user.roles.includes("ROLE_MODERATOR"),
-          showStudentBoard: user.roles.includes("ROLE_ADMIN"),
+        this.setState({
+            currentUser: user,
+          showTeacher: user.roles.includes("ROLE_MODERATOR"),
+          showStudent: user.roles.includes("ROLE_ADMIN"),
       });
     }
     
@@ -54,98 +57,80 @@ class App extends Component {
   logOut() {
     AuthService.logout();
     this.setState({
-      showTeacherBoard: false,
-      showStudentBoard: false,
-      currentUser: undefined,
+        showTeacher: false,
+        showStudent: false,
+        currentUser: undefined,
     });
   }
 
   render() {
-    const { currentUser, showTeacherBoard, showStudentBoard } = this.state;
+    const { currentUser, showTeacher, showStudent } = this.state;
 
     return (
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <Link to={"/"} className="navbar-brand">
-            bezKoder
-          </Link>
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
-              </Link>
-            </li>
+                {showTeacher && (
+                    <Link to={"/disciplines"} className="navbar-brand">
+                        Manage Disciplines
+                    </Link>
+                )}
+                {showTeacher && (
+                    <Link to={"/grades"} className="navbar-brand">
+                        Manage Grades
+                    </Link>
+                )}
+                {showStudent && (
+                    <Link to={"/grades"} className="navbar-brand">
+                        Your Grades
+                    </Link>
+                )}
+                {showTeacher && (
+                    <div className="navbar-nav mr-auto">
+                        {/*<li className="nav-item">*/}
+                        {/*  <Link to={"/disciplines"} className="nav-link">*/}
+                        {/*    Disciplines*/}
+                        {/*  </Link>*/}
+                        {/*  <Link to={"/grades"} className="nav-link">*/}
+                        {/*    Grades*/}
+                        {/*  </Link>*/}
+                        {/*</li>*/}
+                        <Link to={"/addDiscipline"} className="nav-link">
+                            Add Discipline
+                        </Link>
+                        <Link to={"/addGrade"} className="nav-link">
+                            Add Grade
+                        </Link>
+                    </div>
+                )}
 
-            {showTeacherBoard && (
-              <li className="nav-item">
-                <Link to={"/teacher"} className="nav-link">
-                  Teacher Board
-                </Link>
-              </li>
-            )}
+                {currentUser ? (
+                    <div className="navbar-nav ml-auto">
+                        <li className="nav-item">
+                            <Link to={"/profile"} className="nav-link">
+                                {currentUser.username}
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <a href="/login" className="nav-link" onClick={this.logOut}>
+                                LogOut
+                            </a>
+                        </li>
+                        </div>
+                        ) : (
+                        <div className="navbar-nav ml-auto">
+                            <li className="nav-item">
+                                <Link to={"/login"} className="nav-link">
+                                    Login
+                                </Link>
+                            </li>
 
-            {showStudentBoard && (
-              <li className="nav-item">
-                <Link to={"/student"} className="nav-link">
-                  Student Board
-                </Link>
-              </li>
-            )}
-
-            {currentUser && (
-              <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  User
-                </Link>
-              </li>
-            )}
-          </div>
-
-          {currentUser ? (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                  {currentUser.username}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={this.logOut}>
-                  LogOut
-                </a>
-              </li>
-            </div>
-          ) : (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/login"} className="nav-link">
-                  Login
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link to={"/register"} className="nav-link">
-                  Sign Up
-                </Link>
-              </li>
-            </div>
-          )}
-        </nav>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <Link to={"/tutorials"} className="navbar-brand">
-            bezKoder
-          </Link>
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/tutorials"} className="nav-link">
-                Tutorials
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to={"/add"} className="nav-link">
-                Add
-              </Link>
-            </li>
-          </div>
+                            <li className="nav-item">
+                                <Link to={"/register"} className="nav-link">
+                                    Sign Up
+                                </Link>
+                            </li>
+                        </div>
+                    )}
         </nav>
         <div className="container mt-3">
           <Switch>
@@ -154,11 +139,14 @@ class App extends Component {
             <Route exact path="/register" component={Register} />
             <Route exact path="/profile" component={Profile} />
             <Route path="/user" component={BoardUser} />
-            <Route path="/teacher" component={BoardTeacher} />
-            <Route path="/student" component={BoardStudent} />
-            <Route exact path={["/", "/tutorials"]} component={TutorialsList} />
-            <Route exact path="/add" component={AddTutorial} />
-            <Route path="/tutorials/:id" component={Tutorial} />
+            <Route path="/mod" component={BoardModerator} />
+            <Route path="/admin" component={BoardAdmin} />
+            <Route exact path={["/", "/disciplines"]} component={DisciplinesList} />
+            <Route exact path="/addDiscipline" component={AddDiscipline} />
+            <Route path="/disciplines/:id" component={Discipline} />
+            <Route exact path={["/", "/grades"]} component={GradesList} />
+            <Route exact path="/addGrade" component={AddGrade} />
+            <Route path="/grades/:id" component={Grade} />
           </Switch>
         </div>
 

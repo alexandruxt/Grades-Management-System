@@ -33,15 +33,17 @@ exports.signup = (req, res) => {
                 if (req.body.type == 'student') {
                     user.setRoles([1, 3]).then(() => {
                         res.send({ message: "User registered successfully as student!" });
-                    })} else {
+                    })
+                } else {
                     user.setRoles([1, 2]).then(() => {
                         res.send({ message: "User registered successfully as teacher!" });
-                    })}
+                    })
+                }
             }
         })
-    .catch(err => {
-      res.status(500).send({ message: err.message });
-    });
+        .catch(err => {
+            res.status(500).send({ message: err.message });
+        });
 };
 
 exports.signin = (req, res) => {
@@ -70,19 +72,20 @@ exports.signin = (req, res) => {
       var token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: 86400 // 24 hours
       });
-        var authorities = [];
-        user.getRoles().then(roles => {
-            for (let i = 0; i < roles.length; i++) {
-                authorities.push("ROLE_" + roles[i].name.toUpperCase());
-            }
-            res.status(200).send({
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                roles: authorities,
-                accessToken: token
-            });
+
+      var authorities = [];
+      user.getRoles().then(roles => {
+        for (let i = 0; i < roles.length; i++) {
+          authorities.push("ROLE_" + roles[i].name.toUpperCase());
+        }
+        res.status(200).send({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          roles: authorities,
+          accessToken: token
         });
+      });
     })
     .catch(err => {
       res.status(500).send({ message: err.message });
